@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google AI API Project Documentation</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #1a73e8;
+      }
+      pre {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+      code {
+        font-family: "Courier New", Courier, monospace;
+        background-color: #f5f5f5;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+      .note {
+        background-color: #e8f0fe;
+        border-left: 4px solid #1a73e8;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 5px 5px 0;
+      }
+      .warning {
+        background-color: #fef8e8;
+        border-left: 4px solid #fbbc04;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 5px 5px 0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="section">
+        <h1>Google AI API Project Documentation</h1>
+        <p>
+          This document provides a comprehensive guide to the Google AI API
+          project that uses Google's Gemini model to generate English adjectives
+          with their definitions and examples.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Project Overview</h2>
+        <p>
+          This project demonstrates how to use Google's Generative AI API
+          (Gemini) to generate structured data in JSON format. Specifically, it
+          requests the model to generate 10 English adjectives along with their
+          definitions and usage examples.
+        </p>
+
+        <p>Key features of this project:</p>
+        <ul>
+          <li>Integration with Google's Gemini AI model</li>
+          <li>Structured data generation using Pydantic models</li>
+          <li>Environment variable management for API keys</li>
+          <li>JSON schema validation for responses</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Project Structure</h2>
+        <p>The project consists of the following files:</p>
+        <ul>
+          <li>
+            <code>apiRequest.py</code> - Main Python script that makes the API
+            request
+          </li>
+          <li><code>.env</code> - Environment file containing the API key</li>
+          <li>
+            <code>Pipfile</code> and <code>Pipfile.lock</code> - Dependency
+            management files
+          </li>
+          <li><code>document.html</code> - This documentation file</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Setup and Installation</h2>
+        <h3>Prerequisites</h3>
+        <ul>
+          <li>Python 3.11 or higher</li>
+          <li>Pipenv for dependency management</li>
+          <li>Google AI API key</li>
+        </ul>
+
+        <h3>Installation Steps</h3>
+        <ol>
+          <li>Clone the repository to your local machine</li>
+          <li>Navigate to the project directory</li>
+          <li>
+            Install dependencies using Pipenv:
+            <pre>pipenv install</pre>
+          </li>
+          <li>
+            Create a <code>.env</code> file in the
+            <code>google_ai_api</code> directory with your API key:
+            <pre>GOOGLE_AI_API_KEY="your-api-key-here"</pre>
+          </li>
+        </ol>
+
+        <div class="note">
+          <strong>Note:</strong> You need to obtain a Google AI API key from the
+          <a href="https://ai.google.dev/" target="_blank">Google AI Studio</a>.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Code Explanation</h2>
+
+        <h3>Pydantic Model</h3>
+        <p>
+          The project uses Pydantic to define a data model for the adjectives:
+        </p>
+        <pre>
+class EnglishAdjectives(BaseModel):
+    word: str
+    definition: str
+    example: str</pre
+        >
+        <p>
+          This model ensures that the response from the API contains the
+          expected fields and data types.
+        </p>
+
+        <h3>Environment Setup</h3>
+        <p>
+          The project uses the <code>python-dotenv</code> library to load
+          environment variables from the <code>.env</code> file:
+        </p>
+        <pre>
+load_dotenv()
+api_key = os.getenv("GOOGLE_AI_API_KEY")</pre
+        >
+
+        <h3>API Client Initialization</h3>
+        <p>The Google Generative AI client is initialized with the API key:</p>
+        <pre>client = genai.Client(api_key=api_key)</pre>
+
+        <h3>API Request</h3>
+        <p>The request to the Gemini model is made with specific parameters:</p>
+        <pre>
+response = client.models.generate_content(
+    model="gemini-2.0-pro-exp-02-05",
+    contents="Generate 10 English adjectives with their definitions and examples",
+    config={
+        "response_mime_type": "application/json",
+        "response_schema": list[EnglishAdjectives]
+    }
+)</pre
+        >
+        <p>This request:</p>
+        <ul>
+          <li>Uses the "gemini-2.0-pro-exp-02-05" model</li>
+          <li>Asks for 10 English adjectives with definitions and examples</li>
+          <li>Specifies that the response should be in JSON format</li>
+          <li>
+            Provides a schema for the response based on the Pydantic model
+          </li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Running the Project</h2>
+        <p>
+          To run the project, activate the Pipenv shell and execute the Python
+          script:
+        </p>
+        <pre>
+pipenv shell
+cd google_ai_api
+python apiRequest.py</pre
+        >
+        <p>
+          The script will output the first adjective from the response. You can
+          modify the script to display all adjectives if needed.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Example Output</h2>
+        <p>
+          The output will be a structured JSON object containing adjectives, for
+          example:
+        </p>
+        <pre>
+{
+    "word": "vibrant",
+    "definition": "Full of energy, brightness, and life",
+    "example": "The market was filled with vibrant colors and sounds."
+}</pre
+        >
+      </div>
+
+      <div class="section">
+        <h2>Extending the Project</h2>
+        <p>Here are some ways you could extend this project:</p>
+        <ul>
+          <li>Create a web interface to display the generated adjectives</li>
+          <li>Add functionality to save the results to a database</li>
+          <li>Modify the prompt to generate different types of content</li>
+          <li>Implement error handling and retries for API requests</li>
+          <li>
+            Add filtering or search capabilities for the generated content
+          </li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Troubleshooting</h2>
+        <div class="warning">
+          <strong>Warning:</strong> Never commit your <code>.env</code> file to
+          version control. It contains sensitive API keys.
+        </div>
+        <h3>Common Issues</h3>
+        <table>
+          <tr>
+            <th>Issue</th>
+            <th>Solution</th>
+          </tr>
+          <tr>
+            <td>API key not found</td>
+            <td>
+              Ensure your <code>.env</code> file is in the correct location and
+              contains the API key.
+            </td>
+          </tr>
+          <tr>
+            <td>Module not found errors</td>
+            <td>
+              Make sure you've installed all dependencies with
+              <code>pipenv install</code>.
+            </td>
+          </tr>
+          <tr>
+            <td>API rate limiting</td>
+            <td>
+              Google AI API may have rate limits. Implement exponential backoff
+              if making multiple requests.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Resources</h2>
+        <ul>
+          <li>
+            <a href="https://ai.google.dev/docs" target="_blank"
+              >Google AI Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://docs.pydantic.dev/" target="_blank"
+              >Pydantic Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://github.com/theskumar/python-dotenv" target="_blank"
+              >python-dotenv Documentation</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <footer>
+          <p>Created on: February 2024</p>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
