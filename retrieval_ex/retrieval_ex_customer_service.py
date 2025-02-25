@@ -35,7 +35,7 @@ customer_service_function_declaration = types.FunctionDeclaration(
     description="Retrieves customer service data"
 )
 
-first_prompt = "Hangi saatler arasında çalışıyorsunuz?"
+first_prompt = "Ürünümü iade etmek istiyorum. Nasıl yaparım?"
 model_id = "gemini-2.0-flash"
 response = client.models.generate_content(
     contents=[first_prompt],

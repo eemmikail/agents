@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gemini API Retrieval Example Documentation</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #2c3e50;
+      }
+      pre {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+      code {
+        font-family: "Courier New", Courier, monospace;
+        background-color: #f5f5f5;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+      .section {
+        margin-bottom: 30px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+      }
+      .note {
+        background-color: #e7f3fe;
+        border-left: 4px solid #2196f3;
+        padding: 10px;
+        margin: 15px 0;
+      }
+      .flow-diagram {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Gemini API Retrieval Example Documentation</h1>
+
+    <div class="section">
+      <h2>Overview</h2>
+      <p>
+        This document explains the implementation of a retrieval-augmented
+        generation (RAG) example using Google's Gemini API. The example
+        demonstrates how to use function calling capabilities to retrieve
+        external data and incorporate it into the model's responses.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Project Structure</h2>
+      <p>The project consists of the following files:</p>
+      <ul>
+        <li>
+          <strong>retrieval_ex.py</strong> - The main Python script that
+          interacts with the Gemini API
+        </li>
+        <li>
+          <strong>data.json</strong> - A JSON file containing customer service
+          information in Turkish
+        </li>
+        <li><strong>.env</strong> - Environment file containing the API key</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Code Explanation</h2>
+
+      <h3>1. Setup and Initialization</h3>
+      <pre>
+from google import genai
+import os
+from dotenv import load_dotenv
+import json
+from google.genai import types
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable
+api_key = os.getenv("GOOGLE_API_KEY")
+
+client = genai.Client(api_key=api_key)
+        </pre
+      >
+      <p>
+        This section imports necessary libraries and initializes the Gemini API
+        client using an API key stored in the .env file. The key libraries used
+        are:
+      </p>
+      <ul>
+        <li><code>google.genai</code> - Google's Generative AI Python SDK</li>
+        <li><code>dotenv</code> - For loading environment variables</li>
+        <li><code>json</code> - For parsing JSON data</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>2. Data Retrieval Function</h3>
+      <pre>
+def take_a_look_at_the_customer_service_data() -> dict:
+    """
+    Retrieves customer service data from the data.json file.
+    
+    Parameters:
+        None
+    
+    Returns:
+        dict: A dictionary with customer service data.
+    """
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Create the absolute path to data.json
+    data_file_path = os.path.join(script_dir, "data.json")
+    
+    with open(data_file_path, "r") as file:
+        data = json.load(file)
+    return data
+        </pre
+      >
+      <p>
+        This function reads and returns the customer service data from the
+        data.json file. The function:
+      </p>
+      <ul>
+        <li>
+          Gets the directory of the current script using
+          <code>os.path.dirname(os.path.abspath(__file__))</code>
+        </li>
+        <li>Creates an absolute path to the data.json file</li>
+        <li>Opens and reads the JSON file</li>
+        <li>Returns the parsed JSON data as a Python dictionary</li>
+      </ul>
+      <div class="note">
+        <p>
+          <strong>Note:</strong> Using an absolute path based on the script's
+          location ensures the file can be found regardless of the current
+          working directory when the script is executed.
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>3. Function Declaration for Gemini API</h3>
+      <pre>
+customer_service_function_declaration = types.FunctionDeclaration(
+    name="take_a_look_at_the_customer_service_data",
+    description="Retrieves customer service data"
+)
+        </pre
+      >
+      <p>
+        This creates a function declaration that tells the Gemini API about the
+        function that can be called. It includes:
+      </p>
+      <ul>
+        <li>The function name that matches our Python function</li>
+        <li>A description of what the function does</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>4. Initial Prompt and API Configuration</h3>
+      <pre>
+first_prompt = "Hangi saatler arasında çalışıyorsunuz?"
+model_id = "gemini-2.0-flash"
+response = client.models.generate_content(
+    contents=[first_prompt],
+    model=model_id,
+    config=types.GenerateContentConfig(
+        tools=[types.Tool(
+            function_declarations=[customer_service_function_declaration]
+        )],
+        tool_config=types.ToolConfig(
+            function_calling_config=types.FunctionCallingConfig(
+                mode="any",
+                allowed_function_names=["take_a_look_at_the_customer_service_data"]
+            )
+        ),
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
+    )
+)
+        </pre
+      >
+      <p>
+        This section sends the initial prompt to the Gemini API with
+        configuration for function calling:
+      </p>
+      <ul>
+        <li>The prompt is in Turkish, asking "What are your working hours?"</li>
+        <li>Uses the "gemini-2.0-flash" model</li>
+        <li>
+          Configures the API to allow function calling with our declared
+          function
+        </li>
+        <li>
+          Sets <code>mode="any"</code> to allow the model to decide when to call
+          the function
+        </li>
+        <li>Enables automatic function calling</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>5. Processing the Response and Handling Function Calls</h3>
+      <pre>
+print("Response received from Gemini API")
+
+# Check if there are function calls in the response
+if hasattr(response.candidates[0].content.parts[0], 'function_call'):
+    function_call = response.candidates[0].content.parts[0].function_call
+    function_name = function_call.name
+    function_args = function_call.args
+    
+    print(f"Function called: {function_name}")
+    print(f"Arguments: {function_args}")
+
+    if function_name == "take_a_look_at_the_customer_service_data":
+        customer_service_data = take_a_look_at_the_customer_service_data()
+        print(f"Customer service data: {customer_service_data}")
+
+        follow_up = client.models.generate_content(
+            model=model_id,
+            contents=[
+                types.Content(
+                    parts=[types.Part(text=first_prompt)],
+                    role="user"
+                ),
+                types.Content(
+                    parts=[types.Part(function_call=function_call)],
+                    role="model"
+                ),
+                types.Content(
+                    parts=[types.Part(function_response=types.FunctionResponse(
+                        name=function_name,
+                        response=customer_service_data
+                    ))],
+                    role="function"
+                )
+            ]
+        )
+        print(f"Final response: {follow_up.text}")
+else:
+    # If there's no function call, print the text response
+    print(f"Final response: {response.text}")
+        </pre
+      >
+      <p>This section processes the response from the Gemini API:</p>
+      <ol>
+        <li>Checks if the model decided to call a function</li>
+        <li>
+          If a function was called:
+          <ul>
+            <li>Extracts the function name and arguments</li>
+            <li>Executes the corresponding Python function</li>
+            <li>
+              Sends a follow-up request to the API with:
+              <ul>
+                <li>The original user prompt</li>
+                <li>The model's function call</li>
+                <li>The function's response data</li>
+              </ul>
+            </li>
+            <li>
+              Prints the final response that incorporates the retrieved data
+            </li>
+          </ul>
+        </li>
+        <li>
+          If no function was called, it simply prints the model's direct
+          response
+        </li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>Process Flow</h2>
+      <div class="flow-diagram">
+        <ol>
+          <li>
+            User asks a question in Turkish: "Hangi saatler arasında
+            çalışıyorsunuz?" (What are your working hours?)
+          </li>
+          <li>
+            The question is sent to Gemini API with function calling
+            capabilities enabled
+          </li>
+          <li>
+            Gemini recognizes that it needs data to answer the question and
+            calls the
+            <code>take_a_look_at_the_customer_service_data</code> function
+          </li>
+          <li>
+            The Python script executes the function, retrieving data from
+            data.json
+          </li>
+          <li>
+            The retrieved data is sent back to Gemini API along with the
+            original question
+          </li>
+          <li>
+            Gemini generates a final response incorporating the retrieved data
+          </li>
+          <li>The script outputs the final response to the user</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Data Structure</h2>
+      <p>
+        The data.json file contains customer service information in Turkish,
+        including:
+      </p>
+      <ul>
+        <li>Introduction (<code>giris</code>)</li>
+        <li>Contact information (<code>iletisimBilgileri</code>)</li>
+        <li>Working hours (<code>calismaSaatleri</code>)</li>
+        <li>Frequently asked questions (<code>sss</code>)</li>
+        <li>
+          Return and exchange policy (<code>iadeVeDegisimPolitikasi</code>)
+        </li>
+        <li>Technical support information (<code>teknikDestek</code>)</li>
+        <li>Feedback information (<code>geriBildirim</code>)</li>
+      </ul>
+      <p>
+        For the specific question about working hours, the model will use the
+        <code>calismaSaatleri</code> section which contains:
+      </p>
+      <pre>
+"calismaSaatleri": {
+    "haftaIci": "09:00 - 18:00",
+    "cumartesi": "10:00 - 16:00",
+    "pazar": "Kapalı"
+}
+        </pre
+      >
+    </div>
+
+    <div class="section">
+      <h2>Troubleshooting</h2>
+      <h3>Common Issues:</h3>
+      <ol>
+        <li>
+          <strong>FileNotFoundError</strong>
+          <p>
+            If you encounter a "FileNotFoundError" when trying to open
+            data.json, ensure that:
+          </p>
+          <ul>
+            <li>
+              The data.json file exists in the same directory as the script
+            </li>
+            <li>
+              The script uses an absolute path to locate the file (as
+              implemented in the updated code)
+            </li>
+            <li>You have proper read permissions for the file</li>
+          </ul>
+        </li>
+        <li>
+          <strong>API Key Issues</strong>
+          <p>If you encounter authentication errors:</p>
+          <ul>
+            <li>Ensure your .env file contains the correct API key</li>
+            <li>
+              Verify that the environment variable name in the .env file matches
+              what's used in the code
+            </li>
+          </ul>
+        </li>
+        <li>
+          <strong>JSON Parsing Errors</strong>
+          <p>If you encounter JSON parsing errors:</p>
+          <ul>
+            <li>Verify that data.json contains valid JSON syntax</li>
+            <li>Check for missing commas, brackets, or quotes</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>Conclusion</h2>
+      <p>
+        This example demonstrates how to use Gemini API's function calling
+        capabilities to implement a retrieval-augmented generation (RAG) system.
+        The system can:
+      </p>
+      <ul>
+        <li>Recognize when external data is needed to answer a question</li>
+        <li>Call a function to retrieve that data</li>
+        <li>Incorporate the retrieved data into its response</li>
+      </ul>
+      <p>This approach can be extended to more complex scenarios, such as:</p>
+      <ul>
+        <li>Querying databases</li>
+        <li>Accessing APIs</li>
+        <li>Retrieving information from multiple sources</li>
+        <li>Performing calculations or data transformations</li>
+      </ul>
+      <p>
+        By combining the language capabilities of Gemini with external data
+        sources, you can create more powerful and context-aware AI applications.
+      </p>
+    </div>
+  </body>
+</html>
