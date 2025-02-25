@@ -3,7 +3,6 @@ from google.genai import types
 import os
 from dotenv import load_dotenv
 import requests
-from datetime import datetime
 
 # Load environment variables from .env file
 load_dotenv()
@@ -76,9 +75,11 @@ weather_function_declaration = types.FunctionDeclaration(
 # Updated configuration according to the latest Gemini API
 # Note: In the latest Gemini API, the function_calling_config should be placed in tool_config
 # instead of directly in the Tool object
+first_prompt = "What is the weather in Konya?"
+model_id = "gemini-2.0-flash"
 response = client.models.generate_content(
-    contents=["What is the weather in Istanbul?"],
-    model="gemini-2.0-flash",
+    contents=[first_prompt],
+    model=model_id,
     config=types.GenerateContentConfig(
         tools=[types.Tool(
             function_declarations=[weather_function_declaration]
@@ -119,10 +120,10 @@ if hasattr(response.candidates[0].content.parts[0], 'function_call'):
         # Note: In the latest Gemini API, we need to use the types.Content and types.Part classes
         # to structure the conversation history correctly
         follow_up = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model=model_id,
             contents=[
                 types.Content(
-                    parts=[types.Part(text="What is the weather in Istanbul?")],
+                    parts=[types.Part(text=first_prompt)],
                     role="user"
                 ),
                 types.Content(

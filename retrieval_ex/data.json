@@ -1,0 +1,24 @@
+{
+  "giris": "Örnek Mağaza olarak, müşterilerimize en kaliteli hizmeti sunmayı amaçlıyoruz. Bu doküman; sipariş, teslimat, iade, garanti ve diğer destek konularında size yol gösterecek temel bilgileri içermektedir.",
+  "iletisimBilgileri": {
+    "telefon": "444 123 45 67",
+    "email": "destek@ornekmagaza.com",
+    "canliDestek": "http://www.ornekmagaza.com/canli-destek"
+  },
+  "calismaSaatleri": {
+    "haftaIci": "09:00 - 18:00",
+    "cumartesi": "10:00 - 16:00",
+    "pazar": "Kapalı"
+  },
+  "sss": {
+    "siparisDurumu": "Siparişinizin güncel durumunu öğrenmek için sipariş takip numaranızı web sitemizdeki 'Sipariş Takibi' bölümüne giriniz.",
+    "iadeVeDegisim": "Ürünlerinizi, teslimattan itibaren 14 gün içerisinde, orijinal ambalajı ile birlikte iade edebilir veya değiştirebilirsiniz.",
+    "garanti": "Tüm ürünlerimiz 1 yıl garanti kapsamındadır. Garanti süreci ve destek için müşteri hizmetlerimizle iletişime geçiniz."
+  },
+  "iadeVeDegisimPolitikasi": {
+    "iade": "Ürün hasarlı, yanlış gönderilmiş veya beklentilerinizi karşılamıyorsa, 14 gün içerisinde iade talebinde bulunabilirsiniz. İade işlemleri, ürünün kullanılmamış ve orijinal ambalajında olması koşuluyla gerçekleştirilmektedir.",
+    "degisim": "Ürün değiştirme talepleriniz için lütfen müşteri hizmetlerimizle iletişime geçiniz. Ürün değişimi, stok durumuna bağlı olarak onaylanmaktadır."
+  },
+  "teknikDestek": "Ürünlerimizle ilgili yaşadığınız teknik sorunlarda, teknik destek ekibimiz size yardımcı olacaktır. Web sitemizde bulunan 'Teknik Destek' bölümünden veya doğrudan e-posta yoluyla destek alabilirsiniz.",
+  "geriBildirim": "Hizmet kalitemizi artırmak için her türlü öneri, görüş ve şikayetinizi önemsiyoruz. Geri bildirimlerinizi web sitemizdeki form aracılığıyla veya doğrudan müşteri hizmetlerimize iletebilirsiniz."
+}
