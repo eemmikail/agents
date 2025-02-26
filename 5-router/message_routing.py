@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from enum import Enum
 from todo_manager import TodoManager
+from weather_service import is_weather_question, handle_weather_question
 
 # Load environment variables from .env file
 load_dotenv()
@@ -44,8 +45,24 @@ def route_message(message: str) -> MessageForRouting:
     )
     return response.parsed
 
+def answer_question(question: str) -> str:
+    """Use the LLM to answer a general question."""
+    prompt = f"""
+    Please answer the following question concisely and accurately:
+    {question}
+    """
+    
+    response = client.models.generate_content(
+        model="gemini-2.0-pro-exp-02-05",
+        contents=prompt
+    )
+    
+    return response.text
+
 def process_message(message: str):
     """Process a message by routing it and handling it appropriately."""
+    
+    # If not a weather question, proceed with normal routing
     routing_result = route_message(message)
     
     if routing_result.result == "Task":
@@ -54,7 +71,11 @@ def process_message(message: str):
         todo_item = todo_manager.add_todo(message)
         return f"Added to your to-do list: {todo_item.task} (ID: {todo_item.id})"
     elif routing_result.result == "Question":
-        return "I'll try to answer your question: " + message
+        if is_weather_question(message):
+            return handle_weather_question(message)
+        else:
+            # If it's a question, use the LLM to answer it
+            return answer_question(message)
     elif routing_result.result == "Information":
         return "Thanks for the information: " + message
     else:
@@ -63,13 +84,14 @@ def process_message(message: str):
 # Example usage
 if __name__ == "__main__":
     # Test with different types of messages
-    print(process_message("What is the weather in Tokyo?"))
-    print(process_message("Can you create a proposal for a new product?"))
+    print("Question example (weather):")
+    print(process_message("What is the weather in Istanbul?"))
+    print("\nQuestion example (general):")
+    print(process_message("What is the capital of France?"))
+    print("\nTask example:")
+    print(process_message("Create a proposal for a new product"))
+    print("\nInformation example:")
     print(process_message("Tomorrow is your off day"))
-    
-    # Additional task examples
-    print(process_message("Buy groceries for dinner"))
-    print(process_message("Call John about the project"))
     
     # Show current to-do list
     todo_manager = TodoManager()

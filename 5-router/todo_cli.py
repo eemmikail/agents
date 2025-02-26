@@ -1,5 +1,6 @@
 from message_routing import process_message
 from todo_manager import TodoManager
+from weather_service import handle_weather_question
 import argparse
 
 def display_todos(todos):
@@ -16,7 +17,7 @@ def display_todos(todos):
         print(f"   Created: {created} | Completed: {completed}")
 
 def main():
-    parser = argparse.ArgumentParser(description="To-Do List Manager")
+    parser = argparse.ArgumentParser(description="Smart Assistant with To-Do List and Weather")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
     
     # Add a new task
@@ -39,6 +40,14 @@ def main():
     # Process a message (auto-route)
     process_parser = subparsers.add_parser("process", help="Process a message and route it")
     process_parser.add_argument("message", help="Message to process")
+    
+    # Weather command
+    weather_parser = subparsers.add_parser("weather", help="Get weather information")
+    weather_parser.add_argument("location", help="Location to get weather for")
+    
+    # Ask command (direct question to LLM)
+    ask_parser = subparsers.add_parser("ask", help="Ask a question directly")
+    ask_parser.add_argument("question", help="Question to ask")
     
     args = parser.parse_args()
     todo_manager = TodoManager()
@@ -74,6 +83,15 @@ def main():
     
     elif args.command == "process":
         result = process_message(args.message)
+        print(result)
+    
+    elif args.command == "weather":
+        weather_question = f"What is the weather in {args.location}?"
+        result = handle_weather_question(weather_question)
+        print(result)
+    
+    elif args.command == "ask":
+        result = process_message(args.question)
         print(result)
     
     else:

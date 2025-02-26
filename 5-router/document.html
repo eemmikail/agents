@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Assistant with Message Router - Project Documentation</title>
+    <style>
+      :root {
+        --primary-color: #34495e;
+        --secondary-color: #3498db;
+        --dark-color: #2c3e50;
+        --light-color: #ecf0f1;
+        --text-color: #333;
+        --border-color: #ddd;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--light-color);
+        padding: 0;
+        margin: 0;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+      }
+
+      header h1 {
+        margin-bottom: 0.5rem;
+        font-size: 2.2rem;
+      }
+
+      header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .content {
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: var(--primary-color);
+        margin: 1.5rem 0 1rem 0;
+      }
+
+      h1 {
+        font-size: 2rem;
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 0.5rem;
+        margin-top: 0;
+      }
+
+      h2 {
+        font-size: 1.7rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+      }
+
+      h3 {
+        font-size: 1.4rem;
+      }
+
+      h4 {
+        font-size: 1.2rem;
+      }
+
+      p,
+      ul,
+      ol {
+        margin-bottom: 1.2rem;
+      }
+
+      ul,
+      ol {
+        margin-left: 2rem;
+      }
+
+      code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.9rem;
+      }
+
+      pre {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 5px;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        border: 1px solid var(--border-color);
+      }
+
+      pre code {
+        background-color: transparent;
+        padding: 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid var(--border-color);
+      }
+
+      th,
+      td {
+        padding: 0.75rem;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f5f5f5;
+      }
+
+      .section {
+        margin-bottom: 2.5rem;
+      }
+
+      .module-table td:first-child {
+        width: 30%;
+        font-weight: bold;
+      }
+
+      .file-structure-table td:first-child {
+        width: 30%;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      footer {
+        text-align: center;
+        padding: 1rem 0;
+        color: #777;
+        font-size: 0.9rem;
+        margin-top: 2rem;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .flow-diagram {
+        border: 1px solid var(--border-color);
+        padding: 1rem;
+        border-radius: 5px;
+        margin: 1.5rem 0;
+        background-color: #f9f9f9;
+      }
+
+      .flow-step {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        border-radius: 5px;
+        background-color: white;
+        border: 1px solid var(--border-color);
+      }
+
+      .api-endpoints h4 {
+        background-color: #f5f5f5;
+        padding: 0.5rem;
+        border-radius: 3px;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .code-example {
+        margin: 1rem 0;
+        padding: 1rem;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+        border-left: 4px solid var(--secondary-color);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>Smart Assistant with Message Router</h1>
+        <p>Technical Documentation & Implementation Details</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="content">
+        <div class="section">
+          <h1>Project Overview</h1>
+          <p>
+            This project implements a smart assistant system that can process
+            and route different types of messages to appropriate handlers. It
+            provides functionality for task management, weather information
+            retrieval, and general question answering through a command-line
+            interface.
+          </p>
+          <p>
+            The system uses Google's Gemini AI for message classification and
+            question answering, Open-Meteo API for weather data, and implements
+            a local to-do list manager for task tracking.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>System Architecture</h2>
+          <p>
+            The system follows a modular architecture with separate components
+            for each major functionality:
+          </p>
+
+          <h3>Core Modules</h3>
+          <table class="module-table">
+            <tr>
+              <th>Module</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>Message Router</td>
+              <td>
+                Central component that classifies incoming messages into
+                categories (Task, Question, Information) and directs them to the
+                appropriate handler based on their content.
+              </td>
+            </tr>
+            <tr>
+              <td>To-Do Manager</td>
+              <td>
+                Handles task creation, listing, completion, and deletion.
+                Provides persistent storage for tasks in a JSON file.
+              </td>
+            </tr>
+            <tr>
+              <td>Weather Service</td>
+              <td>
+                Processes weather-related questions by extracting location
+                information, querying a weather API, and formatting the
+                response.
+              </td>
+            </tr>
+            <tr>
+              <td>CLI Interface</td>
+              <td>
+                Command-line interface that exposes all system functionality to
+                users through various commands and subcommands.
+              </td>
+            </tr>
+          </table>
+
+          <h3>System Flow</h3>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              1. User inputs a message through the CLI
+            </div>
+            <div class="flow-step">
+              2. Message Router analyzes the message using Gemini AI
+            </div>
+            <div class="flow-step">
+              3. Router classifies the message as Task, Question, or Information
+            </div>
+            <div class="flow-step">
+              4. For Questions, system checks if it's weather-related
+            </div>
+            <div class="flow-step">
+              5. System processes the message with the appropriate handler:
+              <ul>
+                <li>Tasks → To-Do Manager</li>
+                <li>Weather Questions → Weather Service</li>
+                <li>General Questions → Gemini AI</li>
+                <li>Information → Simple acknowledgment</li>
+              </ul>
+            </div>
+            <div class="flow-step">6. Response is returned to the user</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Implementation Details</h2>
+
+          <h3>Message Routing</h3>
+          <p>
+            The message router uses Gemini AI with a structured prompt to
+            classify incoming messages. The implementation uses Pydantic models
+            for type safety and JSON parsing.
+          </p>
+          <div class="code-example">
+            <pre><code>def route_message(message: str) -> MessageForRouting:
+    prompt = f"""
+    You are a helpful assistant that routes messages to the appropriate destination.
+    The possible destinations are:
+    - Task
+    - Question
+    - Information
+    The message is: {message}
+    """
+
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt,
+        config={
+            "response_mime_type": "application/json",
+            "response_schema": MessageForRouting
+        }
+    )
+    return response.parsed</code></pre>
+          </div>
+
+          <h3>To-Do List Management</h3>
+          <p>
+            The to-do manager uses a Pydantic model for task representation and
+            provides CRUD operations for tasks. Tasks are stored in a JSON file
+            for persistence between runs.
+          </p>
+          <div class="code-example">
+            <pre><code>class TodoItem(BaseModel):
+    id: int
+    task: str
+    created_at: datetime = Field(default_factory=datetime.now)
+    completed: bool = False
+    completed_at: Optional[datetime] = None
+    
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }</code></pre>
+          </div>
+
+          <h3>Weather Service</h3>
+          <p>The weather service has three main components:</p>
+          <ol>
+            <li>Location extraction using regex patterns</li>
+            <li>
+              Geocoding through the Nominatim API to convert location names to
+              coordinates
+            </li>
+            <li>Weather data retrieval from the Open-Meteo API</li>
+          </ol>
+          <div class="code-example">
+            <pre><code>def handle_weather_question(question: str) -> str:
+    """Process a weather-related question and return a response."""
+    location = extract_location(question)
+    
+    if not location:
+        return "I couldn't determine which location you're asking about. Please specify a city or region."
+    
+    weather_data = get_weather_for_location(location)
+    
+    if weather_data:
+        return format_weather_response(weather_data)
+    else:
+        return f"Sorry, I couldn't retrieve weather information for {location}. Please try another location."</code></pre>
+          </div>
+
+          <h3>Command-Line Interface</h3>
+          <p>
+            The CLI is implemented using Python's argparse library. It provides
+            commands for:
+          </p>
+          <ul>
+            <li>Processing messages ("process")</li>
+            <li>
+              Adding, completing, and deleting tasks ("add", "complete",
+              "delete")
+            </li>
+            <li>Listing tasks with various filters ("list")</li>
+            <li>Getting weather information directly ("weather")</li>
+            <li>Asking questions directly ("ask")</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>File Structure</h2>
+          <table class="file-structure-table">
+            <tr>
+              <th>File</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>message_routing.py</td>
+              <td>
+                Core routing logic for message classification and delegation to
+                appropriate handlers. Contains the integration with Gemini AI
+                for message categorization.
+              </td>
+            </tr>
+            <tr>
+              <td>todo_manager.py</td>
+              <td>
+                Implements the TodoManager and TodoItem classes for managing
+                tasks. Handles persistent storage of tasks in a JSON file.
+              </td>
+            </tr>
+            <tr>
+              <td>weather_service.py</td>
+              <td>
+                Contains functions for weather question detection, location
+                extraction, geocoding, weather data retrieval, and response
+                formatting.
+              </td>
+            </tr>
+            <tr>
+              <td>todo_cli.py</td>
+              <td>
+                Command-line interface implementation using argparse. Main entry
+                point for user interaction with the system.
+              </td>
+            </tr>
+            <tr>
+              <td>todos.json</td>
+              <td>
+                Auto-generated JSON file that stores to-do items. Created on
+                first run if it doesn't exist.
+              </td>
+            </tr>
+            <tr>
+              <td>.env</td>
+              <td>
+                Environment variables file for storing the Google AI API key.
+                Must be created manually by the user.
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Requirements & Dependencies</h2>
+          <p>The system requires:</p>
+          <ul>
+            <li>Python 3.7 or higher</li>
+            <li>Google AI API key for Gemini model access</li>
+            <li>Internet connection for weather data and question answering</li>
+          </ul>
+
+          <p>Python package dependencies:</p>
+          <div class="code-example">
+            <pre><code>google-generativeai  # For Gemini AI integration
+python-dotenv        # For environment variable loading
+pydantic            # For data validation and JSON serialization
+requests            # For API calls to weather and geocoding services</code></pre>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Setting Up & Running</h2>
+
+          <h3>Installation</h3>
+          <div class="code-example">
+            <pre><code># Install required packages
+pip install google-generativeai python-dotenv pydantic requests</code></pre>
+          </div>
+
+          <h3>Configuration</h3>
+          <p>
+            Create a <code>.env</code> file in the project directory with your
+            Google AI API key:
+          </p>
+          <div class="code-example">
+            <pre><code>GOOGLE_AI_API_KEY=your_api_key_here</code></pre>
+          </div>
+
+          <h3>CLI Usage Examples</h3>
+          <h4>Processing Messages</h4>
+          <div class="code-example">
+            <pre><code># Process a task
+python todo_cli.py process "Schedule a meeting with the team for tomorrow"
+
+# Process a weather question
+python todo_cli.py process "What's the weather in London?"
+
+# Process a general question
+python todo_cli.py process "What is the tallest mountain in the world?"
+
+# Process information
+python todo_cli.py process "The meeting is postponed until next week"</code></pre>
+          </div>
+
+          <h4>To-Do List Management</h4>
+          <div class="code-example">
+            <pre><code># Add a task
+python todo_cli.py add "Complete the project report"
+
+# List active tasks
+python todo_cli.py list
+
+# List all tasks
+python todo_cli.py list --all
+
+# List completed tasks
+python todo_cli.py list --completed
+
+# Mark a task as completed
+python todo_cli.py complete 1
+
+# Delete a task
+python todo_cli.py delete 2</code></pre>
+          </div>
+
+          <h4>Direct Weather & Questions</h4>
+          <div class="code-example">
+            <pre><code># Get weather for a location
+python todo_cli.py weather "Tokyo"
+
+# Ask a question
+python todo_cli.py ask "What is the capital of France?"</code></pre>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Future Enhancements</h2>
+          <p>Potential areas for improvement and extension:</p>
+          <ul>
+            <li>Web interface for more user-friendly interaction</li>
+            <li>Integration with calendar services for scheduling tasks</li>
+            <li>Email notifications for task reminders</li>
+            <li>Enhanced task categorization and prioritization</li>
+            <li>More detailed weather forecasts (multi-day, hourly)</li>
+            <li>Support for more specialized question types</li>
+            <li>User accounts and multi-user support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <p>Smart Assistant with Message Router - Technical Documentation</p>
+      </div>
+    </footer>
+  </body>
+</html>
